@@ -22,6 +22,7 @@ export interface ApiTask {
   id: string;
   project_id: string;
   content: string;
+  description: string;
   due: ApiDue | null;
   priority: number;
 }
@@ -49,5 +50,6 @@ export interface ProjectCardData {
   nextTask: string | null;
   nextDate: string | null;
   endDate: string | null;
+  endDescription: string | null;
   status: StatusType;
 }

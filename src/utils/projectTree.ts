@@ -1,7 +1,7 @@
 import type { ApiProject, ApiTask, ProjectCardData } from '../types/todoist';
 import { computeStatus } from './status';
 
-const END_DATE_RE = /^project end date:\s*(\d{4}-\d{2}-\d{2})$/i;
+const PROJECT_END_RE = /^project end$/i;
 
 export const AREA_COLORS = [
   '#6366f1', // indigo
@@ -74,11 +74,15 @@ export function buildProjectCards(
     const area = topLevel?.name ?? project.name;
     const colorIdx = topLevel ? (areaColorIndex.get(topLevel.id) ?? 0) : 0;
 
-    // Separate the end-date marker task from real tasks
+    // Separate the "Project End" meta-task from real tasks
     let endDate: string | null = null;
+    let endDescription: string | null = null;
     const realTasks = projectTasks.filter((t) => {
-      const m = t.content.match(END_DATE_RE);
-      if (m) { endDate = m[1]; return false; }
+      if (PROJECT_END_RE.test(t.content.trim())) {
+        endDate = t.due?.date.slice(0, 10) ?? null;
+        endDescription = t.description.trim() || null;
+        return false;
+      }
       return true;
     });
 
@@ -107,6 +111,7 @@ export function buildProjectCards(
       nextTask,
       nextDate,
       endDate,
+      endDescription,
       status: computeStatus(taskCount, nextDate),
     });
   }

@@ -72,8 +72,20 @@ export default function ProjectCard({ card }: Props) {
           {card.taskCount} {card.taskCount === 1 ? 'task' : 'tasks'}
         </span>
         {card.nextDate && <span>Next: {fmtDate(card.nextDate)}</span>}
-        {card.endDate && <span>Ends: {fmtDate(card.endDate)}</span>}
       </div>
+
+      {(card.endDescription || card.endDate) && (
+        <div className="end-state">
+          {card.endDescription && (
+            <p className="end-description" title={card.endDescription}>
+              {card.endDescription}
+            </p>
+          )}
+          {card.endDate && (
+            <span className="end-date">Target: {fmtDate(card.endDate)}</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
