@@ -1,6 +1,6 @@
 import type { ApiProject, ApiTask } from '../types/todoist';
 
-const BASE = 'https://api.todoist.com/rest/v2';
+const BASE = '/api';
 
 async function get<T>(token: string, path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
