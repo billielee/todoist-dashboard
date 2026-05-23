@@ -1,28 +1,33 @@
 export interface ApiProject {
   id: string;
   name: string;
-  parent_id: string | null;
+  parentId: string | null;
   color: string;
-  order: number;
-  is_inbox_project?: boolean;
-  is_team_inbox?: boolean;
+  childOrder: number;
+  inboxProject?: boolean;
+  workspaceId?: string;
 }
 
 export interface ApiDue {
   date: string;
-  is_recurring: boolean;
-  datetime?: string;
+  isRecurring: boolean;
+  datetime?: string | null;
   string: string;
-  timezone: string | null;
+  timezone?: string | null;
 }
 
 export interface ApiTask {
   id: string;
-  project_id: string;
+  projectId: string;
   content: string;
   due: ApiDue | null;
-  order: number;
+  childOrder: number;
   priority: number;
+}
+
+export interface ApiPaginatedResponse<T> {
+  results: T[];
+  nextCursor: string | null;
 }
 
 export type StatusType =

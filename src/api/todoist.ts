@@ -1,4 +1,4 @@
-import type { ApiProject, ApiTask } from '../types/todoist';
+import type { ApiProject, ApiTask, ApiPaginatedResponse } from '../types/todoist';
 
 const BASE = '/api';
 
@@ -10,10 +10,24 @@ async function get<T>(token: string, path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+async function fetchAll<T>(token: string, path: string): Promise<T[]> {
+  const items: T[] = [];
+  let cursor: string | null = null;
+  let more = true;
+  while (more) {
+    const qs: string = cursor ? `?cursor=${encodeURIComponent(cursor)}` : '';
+    const page: ApiPaginatedResponse<T> = await get<ApiPaginatedResponse<T>>(token, `${path}${qs}`);
+    items.push(...page.results);
+    cursor = page.nextCursor;
+    more = cursor !== null;
+  }
+  return items;
+}
+
 export function fetchProjects(token: string): Promise<ApiProject[]> {
-  return get<ApiProject[]>(token, '/projects');
+  return fetchAll<ApiProject>(token, '/projects');
 }
 
 export function fetchTasks(token: string): Promise<ApiTask[]> {
-  return get<ApiTask[]>(token, '/tasks');
+  return fetchAll<ApiTask>(token, '/tasks');
 }

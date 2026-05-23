@@ -23,37 +23,37 @@ export function buildProjectCards(
   const projectMap = new Map<string, ApiProject>();
   for (const p of projects) projectMap.set(p.id, p);
 
-  // Build children set: parent_id → child ids
+  // Build children set: parentId → child ids
   const childrenOf = new Map<string, string[]>();
   for (const p of projects) {
-    if (p.parent_id !== null) {
-      const list = childrenOf.get(p.parent_id) ?? [];
+    if (p.parentId !== null) {
+      const list = childrenOf.get(p.parentId) ?? [];
       list.push(p.id);
-      childrenOf.set(p.parent_id, list);
+      childrenOf.set(p.parentId, list);
     }
   }
 
   // Tasks grouped by project
   const tasksByProject = new Map<string, ApiTask[]>();
   for (const t of tasks) {
-    const list = tasksByProject.get(t.project_id) ?? [];
+    const list = tasksByProject.get(t.projectId) ?? [];
     list.push(t);
-    tasksByProject.set(t.project_id, list);
+    tasksByProject.set(t.projectId, list);
   }
 
   // Assign a stable color index to each top-level area
   const areaColorIndex = new Map<string, number>();
   let colorCursor = 0;
   for (const p of projects) {
-    if (p.parent_id === null && !p.is_inbox_project && !p.is_team_inbox) {
+    if (p.parentId === null && !p.inboxProject) {
       areaColorIndex.set(p.id, colorCursor++ % AREA_COLORS.length);
     }
   }
 
   function topLevelAncestor(id: string): ApiProject | null {
     let cur = projectMap.get(id);
-    while (cur && cur.parent_id !== null) {
-      cur = projectMap.get(cur.parent_id);
+    while (cur && cur.parentId !== null) {
+      cur = projectMap.get(cur.parentId);
     }
     return cur ?? null;
   }
@@ -61,7 +61,7 @@ export function buildProjectCards(
   const cards: ProjectCardData[] = [];
 
   for (const project of projects) {
-    if (project.is_inbox_project || project.is_team_inbox) continue;
+    if (project.inboxProject) continue;
 
     const isLeaf = !childrenOf.has(project.id);
     const projectTasks = tasksByProject.get(project.id) ?? [];
