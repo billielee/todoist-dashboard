@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://api.todoist.com/rest/v2/:path*" }
+    { "source": "/api/:path*", "destination": "https://api.todoist.com/api/v1/:path*" }
   ]
 }
