@@ -19,7 +19,7 @@ async function fetchAll<T>(token: string, path: string): Promise<T[]> {
     const qs: string = cursor ? `${sep}cursor=${encodeURIComponent(cursor)}` : '';
     const page: ApiPaginatedResponse<T> = await get<ApiPaginatedResponse<T>>(token, `${path}${qs}`);
     items.push(...page.results);
-    cursor = page.nextCursor;
+    cursor = page.next_cursor;
     more = cursor !== null;
   }
   return items;

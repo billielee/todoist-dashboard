@@ -1,16 +1,18 @@
+// All field names are raw snake_case — the Todoist API v1 HTTP responses
+// are snake_case. The official SDK applies camelCaseKeys() on top; we do not.
+
 export interface ApiProject {
   id: string;
   name: string;
-  parentId: string | null;
+  parent_id: string | null;
   color: string;
-  childOrder: number;
-  inboxProject?: boolean;
-  workspaceId?: string;
+  inbox_project?: boolean;   // v1 renamed from is_inbox_project
+  workspace_id?: string;     // present on workspace projects
 }
 
 export interface ApiDue {
   date: string;
-  isRecurring: boolean;
+  is_recurring: boolean;
   datetime?: string | null;
   string: string;
   timezone?: string | null;
@@ -18,16 +20,15 @@ export interface ApiDue {
 
 export interface ApiTask {
   id: string;
-  projectId: string;
+  project_id: string;
   content: string;
   due: ApiDue | null;
-  childOrder: number;
   priority: number;
 }
 
 export interface ApiPaginatedResponse<T> {
   results: T[];
-  nextCursor: string | null;
+  next_cursor: string | null;
 }
 
 export type StatusType =
