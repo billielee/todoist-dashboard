@@ -15,7 +15,8 @@ async function fetchAll<T>(token: string, path: string): Promise<T[]> {
   let cursor: string | null = null;
   let more = true;
   while (more) {
-    const qs: string = cursor ? `?cursor=${encodeURIComponent(cursor)}` : '';
+    const sep = path.includes('?') ? '&' : '?';
+    const qs: string = cursor ? `${sep}cursor=${encodeURIComponent(cursor)}` : '';
     const page: ApiPaginatedResponse<T> = await get<ApiPaginatedResponse<T>>(token, `${path}${qs}`);
     items.push(...page.results);
     cursor = page.nextCursor;
@@ -28,6 +29,11 @@ export function fetchProjects(token: string): Promise<ApiProject[]> {
   return fetchAll<ApiProject>(token, '/projects');
 }
 
-export function fetchTasks(token: string): Promise<ApiTask[]> {
-  return fetchAll<ApiTask>(token, '/tasks');
+export async function fetchTasks(token: string, projectIds: string[]): Promise<ApiTask[]> {
+  const pages = await Promise.all(
+    projectIds.map((id) =>
+      fetchAll<ApiTask>(token, `/tasks?projectId=${encodeURIComponent(id)}`),
+    ),
+  );
+  return pages.flat();
 }

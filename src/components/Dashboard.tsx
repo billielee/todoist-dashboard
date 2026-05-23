@@ -25,10 +25,8 @@ export default function Dashboard({ token, onClearToken }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const [projects, tasks] = await Promise.all([
-        fetchProjects(token),
-        fetchTasks(token),
-      ]);
+      const projects = await fetchProjects(token);
+      const tasks = await fetchTasks(token, projects.map((p) => p.id));
       setCards(buildProjectCards(projects, tasks));
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Unknown error';
