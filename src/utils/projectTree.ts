@@ -116,5 +116,10 @@ export function buildProjectCards(
     });
   }
 
-  return cards;
+  return cards.sort((a, b) => {
+    if (a.nextDate === null && b.nextDate === null) return 0;
+    if (a.nextDate === null) return 1;
+    if (b.nextDate === null) return -1;
+    return a.nextDate < b.nextDate ? -1 : a.nextDate > b.nextDate ? 1 : 0;
+  });
 }
